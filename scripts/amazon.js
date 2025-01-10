@@ -5,6 +5,9 @@
 // Define productHTML variable for ptoducts html
 let productsHTML = '';
 
+// Define Timeout ID variable for added message
+let addedMsgTimeoutId;
+
 // Loop through each product in the products array
 products.forEach((product) => {
     productsHTML += `
@@ -31,7 +34,7 @@ products.forEach((product) => {
           </div>
 
           <div class="product-quantity-container">
-            <select class="js-quantity-selector${product.id}">
+            <select class="js-quantity-selector-${product.id}">
               <option selected value="1">1</option>
               <option value="2">2</option>
               <option value="3">3</option>
@@ -47,7 +50,7 @@ products.forEach((product) => {
 
           <div class="product-spacer"></div>
 
-          <div class="added-to-cart">
+          <div class="added-to-cart js-added-to-cart-${product.id}">
             <img src="images/icons/checkmark.png">
             Added
           </div>
@@ -82,7 +85,7 @@ document.querySelectorAll('.js-add-to-cart').forEach((button) => {
             }
         });
 
-        const quantitySelector = document.querySelector(`.js-quantity-selector${productId}`);
+        const quantitySelector = document.querySelector(`.js-quantity-selector-${productId}`);
 
         // If the product is already in the cart, increment the quantity
         if(matchingItem) {
@@ -96,6 +99,27 @@ document.querySelectorAll('.js-add-to-cart').forEach((button) => {
                 }
             );
         }
+
+        // Display the added message
+        // Locate the added message element
+        const addedMsgElement = document.querySelector(`.js-added-to-cart-${productId}`);
+
+        // Add visible class to the added message element
+        addedMsgElement.classList.add('added-to-cart-visible');
+
+        // Clear the timeout if it is already set
+        if(addedMsgTimeoutId) {
+            clearTimeout(addedMsgTimeoutId);
+        }
+
+        // Set the timeout to hide the added message after 2 seconds
+        const timeoutId = setTimeout(() => {
+            addedMsgElement.classList.remove('added-to-cart-visible');
+        }, 2000);
+
+        // Store the timeout ID in the addedMsgTimeoutId variable
+        addedMsgTimeoutId = timeoutId;
+
         console.log(cart);
 
         // Update the cart quantity in the header
