@@ -2,7 +2,7 @@
 // This script is loaded by amazon.html
 // It displays the products and handles adding them to the cart
 
-import { cart } from "../data/cart.js";
+import { cart, addToCart } from "../data/cart.js";
 import { products } from "../data/products.js";
 
 // Define productHTML variable for ptoducts html
@@ -69,37 +69,6 @@ products.forEach((product) => {
 document.querySelector('.js-products-grid').innerHTML = productsHTML;
 
 //console.log(productsHTML);
-
-/**
- * @description Function to add the product to the cart
- * @param productId - The product ID to add to the cart
- */
-function addToCart(productId){
-  // Define and initialize matchingItem variable to store if any matching item found in the cart
-  let matchingItem;
-
-  // Loop through each item in the cart array to check if the product is already in the cart
-  cart.forEach((item) => {
-      if (item.productId === productId) {
-          matchingItem = item;
-      }
-  });
-
-  const quantitySelector = document.querySelector(`.js-quantity-selector-${productId}`);
-
-  // If the product is already in the cart, increment the quantity
-  if(matchingItem) {
-      matchingItem.quantity+= Number(quantitySelector.value);
-  }else {
-      // If the product is not in the cart, add it to the cart array
-      cart.push(
-          {
-              productId: productId,
-              quantity: Number(quantitySelector.value),
-          }
-      );
-  }
-}
 
 /**
  * @description Function to show the added message
