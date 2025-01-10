@@ -1,2 +1,2 @@
 // Define and initialize cart array
-const cart = [];
+export const cart = [];
