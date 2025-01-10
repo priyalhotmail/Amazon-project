@@ -2,6 +2,9 @@
 // This script is loaded by amazon.html
 // It displays the products and handles adding them to the cart
 
+import { cart } from "../data/cart.js";
+import { products } from "../data/products.js";
+
 // Define productHTML variable for ptoducts html
 let productsHTML = '';
 
@@ -133,8 +136,5 @@ document.querySelectorAll('.js-add-to-cart').forEach((button) => {
 
         // Set the inner HTML of the cart quantity to the cartQuantity
         document.querySelector('.js-cart-quantity').innerHTML = cartQuantity;
-    });
-
-    
-    
+    });    
 });
