@@ -3,6 +3,7 @@
 // It displays the products and handles adding them to the cart
 
 import { cart } from "../data/cart.js";
+import { products } from "../data/products.js";
 
 // Define productHTML variable for ptoducts html
 let productsHTML = '';
