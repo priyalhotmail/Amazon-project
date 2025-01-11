@@ -2,7 +2,7 @@
 // This script is loaded by checkout.html
 // It displays the cart items and handles products in the cart
 
-import { cart } from "../data/cart.js";
+import { cart, removeFromCart } from "../data/cart.js";
 import { products } from "../data/products.js";
 import { formatCurrency } from "./utils/money.js";
 
@@ -24,7 +24,7 @@ cart.forEach((cartItem) => {
     });
 
     cartSummaryHTML += `
-        <div class="cart-item-container">
+        <div class="cart-item-container js-cart-item-container-${productId}">
             <div class="delivery-date">
               Delivery date: Tuesday, June 21
             </div>
@@ -47,7 +47,7 @@ cart.forEach((cartItem) => {
                   <span class="update-quantity-link link-primary">
                     Update
                   </span>
-                  <span class="delete-quantity-link link-primary">
+                  <span class="delete-quantity-link link-primary js-delete-link" data-product-id="${productId}">
                     Delete
                   </span>
                 </div>
@@ -102,4 +102,20 @@ cart.forEach((cartItem) => {
     `;
 
     document.querySelector('.js-order-summary').innerHTML = cartSummaryHTML;
+});
+
+document.querySelectorAll('.js-delete-link')
+    .forEach((deleteLink) => {
+        deleteLink.addEventListener('click', () => {
+            const productId = deleteLink.dataset.productId;
+            
+            removeFromCart(productId);
+            console.log(cart);
+
+             // Define container variable for the product container
+            const container = document.querySelector(`.js-cart-item-container-${productId}`);
+            
+            // Remove deleted product container from the DOM
+            container.remove();
+        });
 });
