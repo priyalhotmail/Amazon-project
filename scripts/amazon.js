@@ -112,7 +112,6 @@ function updateCartQty() {
 
   // Set the inner HTML of the cart quantity to the cartQuantity
   document.querySelector('.js-cart-quantity').innerHTML = cartQuantity;
-
 }
 
 // Interact with Add to Cart button
