@@ -2,8 +2,9 @@
 // This script is loaded by amazon.html
 // It displays the products and handles adding them to the cart
 
-import { cart } from "../data/cart.js";
+import { cart, addToCart } from "../data/cart.js";
 import { products } from "../data/products.js";
+import { formatCurrency } from "./utils/money.js";
 
 // Define productHTML variable for ptoducts html
 let productsHTML = '';
@@ -33,7 +34,7 @@ products.forEach((product) => {
           </div>
 
           <div class="product-price">
-            $${(product.priceCents / 100).toFixed(2)}
+            $${formatCurrency(product.priceCents)}
           </div>
 
           <div class="product-quantity-container">
@@ -70,71 +71,64 @@ document.querySelector('.js-products-grid').innerHTML = productsHTML;
 
 //console.log(productsHTML);
 
+/**
+ * @description Function to show the added message
+ * @param productId - The product ID to show the added message
+ */
+function showAddedMessage(productId){
+  // Display the added message
+  // Locate the added message element
+  const addedMsgElement = document.querySelector(`.js-added-to-cart-${productId}`);
+
+  // Add visible class to the added message element
+  addedMsgElement.classList.add('added-to-cart-visible');
+
+  // Clear the timeout if it is already set
+  if(addedMsgTimeoutId) {
+      clearTimeout(addedMsgTimeoutId);
+  }
+
+  // Set the timeout to hide the added message after 2 seconds
+  const timeoutId = setTimeout(() => {
+      addedMsgElement.classList.remove('added-to-cart-visible');
+  }, 2000);
+
+  // Store the timeout ID in the addedMsgTimeoutId variable
+  addedMsgTimeoutId = timeoutId;
+}
+
+/**
+ * @description Function to update the cart quantity in the header
+ */
+function updateCartQty() {
+  // Update the cart quantity in the header
+  // Define and initialize cartQuantity variable to store the total quantity of the cart
+  let cartQuantity = 0;
+
+  // Loop through each item in the cart array to calculate the total quantity
+  cart.forEach((item) => {
+      cartQuantity += item.quantity;
+  });
+
+  // Set the inner HTML of the cart quantity to the cartQuantity
+  document.querySelector('.js-cart-quantity').innerHTML = cartQuantity;
+}
+
 // Interact with Add to Cart button
 document.querySelectorAll('.js-add-to-cart').forEach((button) => {
-    // Add event listener to each button
-    button.addEventListener('click', () => {
-        
-        // Get the product ID from the button's data-product-id attribute
-        const productId = button.dataset.productId;
+  // Add event listener to each button
+  button.addEventListener('click', () => {
+      
+    // Get the product ID from the button's data-product-id attribute
+    const productId = button.dataset.productId;
 
-        // Define and initialize matchingItem variable to store if any matching item found in the cart
-        let matchingItem;
+    // call addToCart function to add the product to the cart
+    addToCart(productId);
 
-        // Loop through each item in the cart array to check if the product is already in the cart
-        cart.forEach((item) => {
-            if (item.productId === productId) {
-                matchingItem = item;
-            }
-        });
+    // call showAddedMessage function to show the added message
+    showAddedMessage(productId);
 
-        const quantitySelector = document.querySelector(`.js-quantity-selector-${productId}`);
-
-        // If the product is already in the cart, increment the quantity
-        if(matchingItem) {
-            matchingItem.quantity+= Number(quantitySelector.value);
-        }else {
-            // If the product is not in the cart, add it to the cart array
-            cart.push(
-                {
-                    productId: productId,
-                    quantity: Number(quantitySelector.value),
-                }
-            );
-        }
-
-        // Display the added message
-        // Locate the added message element
-        const addedMsgElement = document.querySelector(`.js-added-to-cart-${productId}`);
-
-        // Add visible class to the added message element
-        addedMsgElement.classList.add('added-to-cart-visible');
-
-        // Clear the timeout if it is already set
-        if(addedMsgTimeoutId) {
-            clearTimeout(addedMsgTimeoutId);
-        }
-
-        // Set the timeout to hide the added message after 2 seconds
-        const timeoutId = setTimeout(() => {
-            addedMsgElement.classList.remove('added-to-cart-visible');
-        }, 2000);
-
-        // Store the timeout ID in the addedMsgTimeoutId variable
-        addedMsgTimeoutId = timeoutId;
-
-        console.log(cart);
-
-        // Update the cart quantity in the header
-        // Define and initialize cartQuantity variable to store the total quantity of the cart
-        let cartQuantity = 0;
-
-        // Loop through each item in the cart array to calculate the total quantity
-        cart.forEach((item) => {
-            cartQuantity += item.quantity;
-        });
-
-        // Set the inner HTML of the cart quantity to the cartQuantity
-        document.querySelector('.js-cart-quantity').innerHTML = cartQuantity;
-    });    
+    // call updateCartQty function to update the cart quantity
+    updateCartQty();
+  });    
 });
